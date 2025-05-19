@@ -1,7 +1,13 @@
 import { redirect } from "next/navigation";
 import * as querystring from "node:querystring";
+import {getActiveSession, isSessionValid} from "@/lib/auth";
+import {cookies} from "next/headers";
 
-export default function SpotifyLogin() {
+export default async function SpotifyLogin() {
+    const session = await getActiveSession(await cookies())
+    if(session && isSessionValid(session)) {
+        redirect("/login/success");
+    }
 
     redirect("https://accounts.spotify.com/authorize?" + querystring.stringify({
         response_type: "code",
@@ -17,7 +23,7 @@ export default function SpotifyLogin() {
         <h1 className="text-2xl font-bold">Login with Spotify</h1>
         <a
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="/api/auth/login"
+            href="/api/auth/spotify"
         >
             Login with Spotify
         </a>
