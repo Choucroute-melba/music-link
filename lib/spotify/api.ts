@@ -38,7 +38,7 @@ export async function refreshToken(user: User) {
         },
         body: new URLSearchParams({
             grant_type: "refresh_token",
-            refresh_token: user.auth_spotify.refresh_token,
+            refresh_token: user.auth.refresh_token,
         })
     })
     if (!res.ok) {
@@ -50,7 +50,7 @@ export async function refreshToken(user: User) {
     }
     if (data.access_token) {
         const expirationDate = new Date(Date.now() + data.expires_in * 1000);
-        await updateToken(user.id, data.access_token, user.auth_spotify.refresh_token, expirationDate);
+        await updateToken(user.id, data.access_token, user.auth.refresh_token, expirationDate);
     }
 }
 
@@ -68,7 +68,7 @@ export async function getUserProfileById(id: string) {
  * @param user Can be a User object or an access token string
  */
 export async function getUserProfile(user: User | string): Promise<SpotifyProfile> {
-    const token = typeof user == 'string' ? user : user.auth_spotify.token;
+    const token = typeof user == 'string' ? user : user.auth.token;
     const res = await fetch("https://api.spotify.com/v1/me", {
         method: "GET",
         headers: {

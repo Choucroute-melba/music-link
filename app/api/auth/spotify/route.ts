@@ -32,12 +32,13 @@ export async function GET(request: Request) {
                 height: profile.images[0]?.height || 0,
                 width: profile.images[0]?.width || 0
             },
-            auth_spotify: {
+            auth: {
                 code: code,
                 token: auth.access_token,
                 refresh_token: auth.refresh_token,
                 token_expires_at: new Date(Date.now() + auth.expires_in * 1000),
-           user_id: profile.id
+                user_id: profile.id,
+                scopes: auth.scope.split(" "),
             }
         })
         const userAgent = request.headers.get("user-agent");

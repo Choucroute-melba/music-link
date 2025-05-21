@@ -5,6 +5,7 @@ import {getActiveSession, isSessionValid, Session} from "@/lib/auth";
 import {cookies} from "next/headers";
 import Image from "next/image";
 import LinkButton from "@/lib/components/LinkButton";
+import React from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,45 +27,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    const session = await getActiveSession(await cookies())
 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white min-h-screen h-full`}>
-      <div className="flex flex-col items-center justify-baseline min-h-screen h-screen p-8 pb-20 gap-16 bg-blue-950 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-          <div className={"flex flex-col w-full h-full"}>
-              <Header session={session}/>
-              <div className={"flex flex-col justify-baseline bg-black/[.5] border-blue-100 border-1 rounded-lg p-4 h-full"}>
-                    {children}
-              </div>
-          </div>
+      <div className="flex flex-col items-center justify-baseline min-h-screen h-screen p-8 pb-20 gap-16 bg-linear-to-b from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950  sm:p-20 font-[family-name:var(--font-geist-sans)]">
+        {children}
       </div>
       </body>
     </html>
   );
-}
-
-function Header({session}: {session: Session | null,}) {
-    const isLoggedIn = !!session && isSessionValid(session);
-
-    if(isLoggedIn) {
-        return (
-            <header className={"flex items-center justify-between w-full h-16 px-4 py-8"}>
-                <div className="flex items-center gap-4">
-                    <Image src={session.user?.image?.url || "/spotify/Full_Logo_Green_CMYK.svg"}
-                           alt={isLoggedIn ? "User profile picture" : "spotify logo"}
-                           width={40}
-                           height={40}
-                           className={"rounded-full"}
-                    ></Image>
-                    <p className={"text-lg font-bold"}>{session.user?.username || "Log in to Spotify"}</p>
-                </div>
-                <div className={"flex items-center justify-baseline gap-4"}>
-                    <LinkButton href={"/logout"}>
-                        Logout
-                    </LinkButton>
-                </div>
-            </header>
-        )
-    }
 }

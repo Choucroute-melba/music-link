@@ -10,12 +10,13 @@ export type User = {
         height: number;
         width: number;
     }
-    auth_spotify: {
+    auth: {
         code: string;
         token: string;
         refresh_token: string;
-        token_expires_at: Date;
+        token_expires_at: number | Date;
         user_id: string;
+        scopes: string[];
     }
 }
 
@@ -42,19 +43,18 @@ const sql = neon(process.env.DATABASE_URL);
 
 export async function createUserAuth(usr: User) {
     const { id, platform } = usr;
-    const {code, token, refresh_token, token_expires_at} = usr.auth_spotify;
+    const {code, token, refresh_token, token_expires_at, scopes} = usr.auth;
     const { username, image } = usr;
 
-
     try {
-        if(getUser(usr.id) !== null) {
+        if(await getUser(usr.id) !== null) {
             console.info("User already exists, updating instead");
             await sql`UPDATE auth SET platform = ${platform}, code = ${code}, token = ${token}, refresh_token = ${refresh_token}, token_expires_at = ${token_expires_at} WHERE id = ${id}`;
             await sql`UPDATE profiles SET platform = ${platform}, username = ${username}, image = ${image} WHERE id = ${id}`;
             return;
         }
 
-        await sql`INSERT INTO auth (id, platform, code, token, refresh_token, token_expires_at) VALUES (${id}, ${platform}, ${code}, ${token}, ${refresh_token}, ${token_expires_at})`;
+        await sql`INSERT INTO auth (id, platform, code, token, refresh_token, token_expires_at, scopes) VALUES (${id}, ${platform}, ${code}, ${token}, ${refresh_token}, ${token_expires_at}, ${scopes})`;
         await sql`INSERT INTO profiles (id, platform, username, image) VALUES (${id}, ${platform}, ${username}, ${image})`;
     }
     catch (e) {
@@ -67,12 +67,12 @@ export async function getUser(id: string): Promise<User | null> {
     try {
         const auth = await sql`SELECT * FROM auth WHERE id = ${id}`;
         if (auth.length === 0) {
-            console.warn("User not found");
+            console.warn(`User ${id} not found`);
             return null;
         }
         const profile = await sql`SELECT * FROM profiles WHERE id = ${id}`;
         if (profile.length === 0) {
-            console.warn("Profile not found");
+            console.warn(`Profile ${id} not found`);
             return null;
         }
         return {
@@ -84,12 +84,13 @@ export async function getUser(id: string): Promise<User | null> {
                 height: profile[0].image.height,
                 width: profile[0].image.width
             },
-            auth_spotify: { // TODO: implement other platforms
+            auth: { // TODO: implement other platforms
                 code: auth[0].code,
                 token: auth[0].token,
                 refresh_token: auth[0].refresh_token,
                 token_expires_at: new Date(auth[0].token_expires_at),
-                user_id: auth[0].user_id
+                user_id: auth[0].user_id,
+                scopes: auth[0].scopes
             }
         };
     }

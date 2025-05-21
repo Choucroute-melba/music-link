@@ -24,7 +24,6 @@ export default async function LoginSuccessPage({searchParams}: {searchParams: an
     if(!user) {
         redirect("/login/error?error=user_not_found");
     }
-    const profile: SpotifyProfile = await getUserProfile(user)
 
     return (
         <>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import {getActiveSession, isSessionValid} from "@/lib/auth";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
+import LinkButton from "@/lib/components/LinkButton";
 
 export default async function Home() {
 
@@ -24,31 +25,41 @@ export default async function Home() {
         />
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
+            Connect to your favorite music platform
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
+            Create, share and have fun
           </li>
         </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-blue-900 dark:hover:bg-blue-200 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="/login/spotify"
-          >
+        <div className="flex flex-col gap-4 items-center">
+          <LinkButton href="/login/spotify">
             <Image
-              className="light:invert"
-              src="/spotify/Primary_Logo_Black_CMYK.svg"
+              className="hidden dark:block"
+              src={`/spotify/Primary_Logo_Black_CMYK.svg`}
               alt="spotify logo"
               width={20}
               height={20}
             />
+            <Image
+                className="block dark:hidden"
+                src={`/spotify/Primary_Logo_White_CMYK.svg`}
+                alt="spotify logo"
+                width={20}
+                height={20}
+            />
             Login with Spotify
-          </a>
+          </LinkButton>
+          <LinkButton href="/login/youtube">
+            <Image
+                className=""
+                src={`/youtube/youtube_full_color_icon/social/64px/red/youtube_social_icon_red.png`}
+                alt="spotify logo"
+                width={25}
+                height={25}
+            />
+            Login with Youtube / Youtube Music
+          </LinkButton>
           <a
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
