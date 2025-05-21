@@ -1,6 +1,7 @@
 import {redirect} from "next/navigation";
 import {createAccessToken, getUserProfile} from "@/lib/spotify/api";
 import {createSession, createUserAuth} from "@/lib/auth";
+import LinkButton from "@/lib/components/LinkButton";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
