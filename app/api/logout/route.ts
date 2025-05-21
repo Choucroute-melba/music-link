@@ -1,9 +1,10 @@
 import {redirect} from "next/navigation";
 import {closeSession} from "@/lib/auth";
 import {cookies} from "next/headers";
+import {NextRequest} from "next/server";
 
-export async function GET(req: Request, res: Response) {
-    const session_id = (await cookies()).get("session_id");
+export async function GET(req: NextRequest) {
+    const session_id = req.cookies.get("session_id");
     if (!session_id) {
         redirect("/?reason=no_session");
     }
